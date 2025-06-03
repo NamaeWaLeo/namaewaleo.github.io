@@ -3,400 +3,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제타(zeta-ai.io) 대화형 분석 보고서</title>
+    <title>제타 갤러리 인터랙티브 분석 리포트</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <!-- Visualization & Content Choices: 
-        - Report Info: User Demographics & Traffic. Goal: Inform & Compare. Viz: Donut/Bar charts (Chart.js/Canvas). Interaction: Tooltips on hover. Justification: Charts offer a quick, digestible view of distributions and comparisons, superior to text or tables.
-        - Report Info: Core Features. Goal: Organize & Inform. Viz: Tabbed interface (HTML/CSS/JS). Interaction: Click to switch content. Justification: Tabs group related information cleanly, allowing users to focus on one feature at a time without clutter.
-        - Report Info: Issues & Controversies. Goal: Highlight & Inform. Viz: Grid of interactive "alert" cards with icons (HTML/CSS/JS). Interaction: Click to expand details. Justification: Visually separates critical issues and allows for progressive disclosure of details, making sensitive information manageable and less overwhelming.
-        - Report Info: Company Differentiation. Goal: Clarify Identity. Viz: Card layout (HTML/CSS). Justification: Clearly segregates 'zeta-ai.io' from similarly named entities, addressing a key point of confusion early on.
+        - Report Info: User Demographics (87% 10-20s, 65% female). Goal: Inform on user base. Viz: Doughnut Chart. Interaction: Hover for tooltips. Justification: Excellent for showing proportional data at a glance. Library: Chart.js.
+        - Report Info: Manager Succession & Scandals (1st-4th managers). Goal: Show change over time and compare leadership failures. Viz: Interactive HTML/CSS/JS Timeline. Interaction: Click on a manager's node to reveal detailed information. Justification: Transforms a long, text-heavy section into an engaging, explorable narrative, clearly showing the sequence and impact of each manager's tenure. Method: Custom JS.
+        - Report Info: Key Community Concepts ('0일차' meme, slang, rules). Goal: Organize and explain cultural elements. Viz: Stylized stat cards, accordion/toggle lists. Interaction: Click to expand/reveal definitions. Justification: Breaks down complex cultural information into digestible chunks, preventing user overload and encouraging focused exploration. Method: Custom JS.
+        - Report Info: Major Incidents (Chatroom scandal, AI moderation issues). Goal: Inform on critical events. Viz: Thematic content cards with icons. Interaction: Static display for clarity. Justification: Clearly isolates and explains the most significant scandals that shaped the community, providing context for the overall instability. Method: HTML/Tailwind.
     -->
     <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 350px;
-        }
-        @media (min-width: 640px) {
-            .chart-container {
-                height: 320px;
-            }
-        }
-        .nav-link {
-            transition: color 0.3s, border-bottom-color 0.3s;
-        }
-        .nav-link:hover, .nav-link.active {
-            color: #4f46e5; /* indigo-600 */
-            border-bottom-color: #4f46e5;
-        }
-        .content-card {
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .content-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        }
-        .tab-button.active {
-            border-color: #4f46e5;
-            background-color: #eef2ff;
-            color: #4338ca;
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .nav-link { transition: color 0.3s, border-color 0.3s; }
+        .nav-link.active { color: #4F46E5; border-bottom-color: #4F46E5; }
+        .timeline-item-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-gray-50 text-gray-800">
 
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <h1 class="text-xl md:text-2xl font-bold text-slate-900">제타(zeta-ai.io) 심층 분석</h1>
-                <nav class="hidden md:flex space-x-6">
-                    <a href="#overview" class="nav-link text-slate-600 font-medium pb-1 border-b-2 border-transparent">개요</a>
-                    <a href="#user-analysis" class="nav-link text-slate-600 font-medium pb-1 border-b-2 border-transparent">사용자 분석</a>
-                    <a href="#features" class="nav-link text-slate-600 font-medium pb-1 border-b-2 border-transparent">핵심 기능</a>
-                    <a href="#issues" class="nav-link text-slate-600 font-medium pb-1 border-b-2 border-transparent">문제점 및 논란</a>
-                    <a href="#market" class="nav-link text-slate-600 font-medium pb-1 border-b-2 border-transparent">시장 위치</a>
-                </nav>
-            </div>
-        </div>
-    </header>
+    <div id="app" class="container mx-auto px-4 py-8 max-w-6xl">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2">제타 갤러리 커뮤니티 분석</h1>
+            <p class="text-lg text-gray-600">AI 챗봇 커뮤니티의 동적인 문화, 사건사고, 그리고 거버넌스 탐험</p>
+        </header>
 
-    <main class="container mx-auto px-4 py-8 md:py-12">
+        <nav class="sticky top-0 bg-gray-50/80 backdrop-blur-sm z-10 mb-12 border-b border-gray-200">
+            <ul class="flex justify-center items-center space-x-4 md:space-x-8 text-sm md:text-base font-medium">
+                <li><a href="#home" class="nav-link active py-4 border-b-2 border-transparent hover:text-indigo-600">개요</a></li>
+                <li><a href="#managers" class="nav-link py-4 border-b-2 border-transparent hover:text-indigo-600">매니저 연대기</a></li>
+                <li><a href="#incidents" class="nav-link py-4 border-b-2 border-transparent hover:text-indigo-600">주요 사건</a></li>
+                <li><a href="#culture" class="nav-link py-4 border-b-2 border-transparent hover:text-indigo-600">커뮤니티 문화</a></li>
+                <li><a href="#conclusion" class="nav-link py-4 border-b-2 border-transparent hover:text-indigo-600">결론</a></li>
+            </ul>
+        </nav>
 
-        <section id="overview" class="mb-16 scroll-mt-24">
-            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">서비스 개요</h2>
-            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">스캐터랩이 개발한 '제타'는 AI 캐릭터 채팅을 중심으로 한 엔터테인먼트 플랫폼입니다. 독자적인 언어 모델을 기반으로 한국의 모바일 사용자에게 높은 몰입감과 참여도를 이끌어냈습니다. 본 분석은 제타의 서비스, 사용자 동향, 그리고 운영상의 주요 쟁점들을 다룹니다.</p>
+        <main>
+            <section id="home" class="space-y-12">
+                <div class="text-center bg-white p-6 rounded-xl shadow-md">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">커뮤니티 소개: AI와 함께 성장하는 공간</h2>
+                    <p class="text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                        제타 갤러리는 스캐터랩의 AI 챗봇 '제타'를 중심으로 형성된 디시인사이드 마이너 갤러리입니다. 이곳의 정체성은 제타 앱의 기능, 성공, 그리고 문제점과 깊이 연결되어 있습니다. 앱의 업데이트나 AI의 '환각' 현상 같은 기술적 이슈는 즉시 갤러리의 핵심 토론 주제가 되며, 커뮤니티의 역동성을 만들어내는 원동력이 됩니다. 이 섹션에서는 제타 갤러리의 기본 정보와 핵심적인 특성을 소개합니다.
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="md:col-span-1 bg-white p-6 rounded-xl shadow-md flex flex-col justify-center items-center text-center">
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">무사고...</h3>
+                        <div class="text-8xl font-bold text-indigo-600">0<span class="text-4xl text-gray-500 ml-2">일차</span></div>
+                        <p class="mt-4 text-gray-600">끊이지 않는 사건사고를 유머로 승화시킨, 갤러리의 불안정성을 상징하는 자조적인 밈입니다.</p>
+                    </div>
+                    <div class="md:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold mb-2 text-center text-gray-800">핵심 사용자층 분석</h3>
+                        <p class="text-center text-gray-600 mb-4 text-sm">제타 앱 사용자의 대다수는 10-20대이며, 이는 갤러리 문화에 직접적인 영향을 미칩니다.</p>
+                        <div class="chart-container relative h-64 md:h-80 w-full max-w-md mx-auto">
+                            <canvas id="userDemographicsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="managers" class="pt-20 space-y-12 hidden">
+                <div class="text-center bg-white p-6 rounded-xl shadow-md">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">매니저 연대기: 불안정한 리더십의 역사</h2>
+                    <p class="text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                        제타 갤러리의 역사는 잦은 매니저 교체와 논란으로 요약될 수 있습니다. 각 매니저의 재임 기간은 독단적 운영, 친목, 심지어 미성년자 관련 스캔들 등 각기 다른 문제로 얼룩졌습니다. 아래 타임라인을 통해 갤러리 리더십의 불안정한 흐름과 그로 인해 발생한 주요 사건들을 시각적으로 탐색해 보세요. 각 시점을 클릭하면 상세 내용을 확인할 수 있습니다.
+                    </p>
+                </div>
+
+                <div class="relative wrap overflow-hidden p-10 h-full">
+                    <div class="border-2 absolute border-opacity-20 border-gray-700 h-full border" style="left: 50%"></div>
+                    <div id="timeline-container"></div>
+                </div>
+            </section>
+
+            <section id="incidents" class="pt-20 space-y-12 hidden">
+                 <div class="text-center bg-white p-6 rounded-xl shadow-md">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">주요 사건과 논란</h2>
+                    <p class="text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                        제타 갤러리의 역사에는 커뮤니티의 신뢰를 뒤흔든 몇 가지 결정적인 사건들이 있었습니다. '친목 오픈 채팅방' 스캔들은 리더십의 윤리적 문제를 드러냈고, AI 콘텐츠 중재 문제는 개발사와 사용자 간의 갈등을 촉발시켰습니다. 이 섹션에서는 갤러리의 정체성에 큰 영향을 미친 핵심 논란들을 자세히 다룹니다.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex items-center mb-4">
+                            <div class="p-3 rounded-full bg-red-100 mr-4">
+                                <span class="text-2xl">💬</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-red-800">"친목 오픈 채팅방" 스캔들</h3>
+                        </div>
+                        <div class="space-y-3 text-gray-700">
+                            <p><strong class="font-semibold">개요:</strong> 3, 4대 매니저를 포함한 핵심 유저들이 참여한 비공식 채팅방이 외부 매니저에 의해 폭로되었습니다.</p>
+                            <p><strong class="font-semibold">핵심 문제:</strong> 채팅방 내에서 갤러리를 버리고 이주할 계획을 논의했으며, 더 심각하게는 10대 유저가 포함된 환경에서 성인물이 공유되었습니다.</p>
+                            <p><strong class="font-semibold">파장:</b> 이 사건은 4대 매니저가 초등학생이라는 사실이 밝혀지며 절정에 달했고, 커뮤니티의 신뢰와 아동 보호 문제에 대한 심각한 경종을 울렸습니다.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                         <div class="flex items-center mb-4">
+                            <div class="p-3 rounded-full bg-blue-100 mr-4">
+                                <span class="text-2xl">🤖</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-blue-800">AI 콘텐츠 중재와 갈등</h3>
+                        </div>
+                        <div class="space-y-3 text-gray-700">
+                            <p><strong class="font-semibold">문제의 근원:</strong> 제타 앱 자체가 '음란한 놀이터'로 변질된다는 비판과 함께, AI의 허술한 콘텐츠 필터링과 비정상적인 반응(환각, 가스라이팅)이 지속적으로 문제되었습니다.</p>
+                            <p><strong class="font-semibold">개발사의 대응:</strong> 개발사 스캐터랩은 공식 소통 창구에서 정당한 비판마저 삭제하고 사용자를 차단하는 '여론 탄압'으로 비판받았으며, 이미지 도용 등 명백한 문제 해결에도 소극적이었습니다.</p>
+                             <p><strong class="font-semibold">사용자 행동:</strong> 결국 2024년 2월, 갤러리 유저와 제작자들은 캐릭터 이미지에 비판 문구를 삽입하는 대규모 시위를 벌이며 개발사에 소통을 요구했습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="culture" class="pt-20 space-y-12 hidden">
+                <div class="text-center bg-white p-6 rounded-xl shadow-md">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">갤러리 문화와 규칙</h2>
+                     <p class="text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                        제타 갤러리는 공식적인 규칙과 비공식적인 규범이 공존하는 독특한 문화를 가지고 있습니다. 공식 규칙은 질서 유지를 목표로 하지만, '친목질'과 같은 비공식적 행위가 더 큰 영향을 미치기도 합니다. 이 섹션에서는 갤러리 내에서 사용되는 독특한 용어들과 커뮤니티의 역학을 이해하는 데 도움이 되는 공식 및 비공식 규범들을 소개합니다.
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-bold mb-4 text-center text-gray-800">갤러리 용어 사전</h3>
+                        <div id="slang-accordion" class="space-y-2"></div>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-bold mb-4 text-center text-gray-800">규칙과 관행</h3>
+                        <div id="rules-accordion" class="space-y-2"></div>
+                    </div>
+                </div>
+            </section>
             
-            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                <h3 class="font-bold text-xl mb-4 text-indigo-700">⚠️ 중요: '제타'의 명확한 구분</h3>
-                <p class="text-slate-600 mb-6">`zeta-ai.io`는 스캐터랩의 AI 채팅 앱을 지칭합니다. 아래는 이름이 유사하지만 전혀 다른 서비스들입니다.</p>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-slate-100 p-4 rounded-lg">
-                        <h4 class="font-semibold text-slate-800">제타 글로벌 (Zeta Global)</h4>
-                        <p class="text-sm text-slate-500 mt-1">상장된 마케팅 기술 기업. 현재 증권 사기 소송에 직면.</p>
-                    </div>
-                    <div class="bg-slate-100 p-4 rounded-lg">
-                        <h4 class="font-semibold text-slate-800">제다아이오 (Zeda.io)</h4>
-                        <p class="text-sm text-slate-500 mt-1">제품 발굴 플랫폼. 2025년 2월 서비스 종료 발표.</p>
-                    </div>
-                    <div class="bg-slate-100 p-4 rounded-lg">
-                        <h4 class="font-semibold text-slate-800">제타닷테크 (Zeta.tech)</h4>
-                        <p class="text-sm text-slate-500 mt-1">금융 기관을 위한 뱅킹 기술 기업.</p>
-                    </div>
-                     <div class="bg-slate-100 p-4 rounded-lg">
-                        <h4 class="font-semibold text-slate-800">제드닷데브 (Zed.dev)</h4>
-                        <p class="text-sm text-slate-500 mt-1">'Zeta' 언어 모델을 사용하는 코드 편집기.</p>
+            <section id="conclusion" class="pt-20 space-y-8 hidden">
+                <div class="bg-white p-8 rounded-xl shadow-md">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">결론: 신기술 커뮤니티의 도전과 과제</h2>
+                    <div class="prose max-w-none text-gray-700 space-y-4">
+                        <p>제타 갤러리는 AI 챗봇이라는 신기술을 중심으로 형성된 커뮤니티가 직면하는 복합적인 도전들을 명확하게 보여주는 사례입니다. 그 역사는 앱 자체의 기술적 한계, 젊은 사용자층의 역동성, 그리고 분산된 온라인 거버넌스 모델의 취약성이 어떻게 상호작용하는지를 드러냅니다.</p>
+                        <p>연이은 매니저들의 비행은 권력에 대한 견제와 책임성 부재가 커뮤니티를 얼마나 쉽게 불안정하게 만드는지 보여줍니다. 특히 미성년자 매니저와 관련된 스캔들은 사용자 안전, 특히 아동 보호 정책의 시급한 필요성을 강조합니다. '친목질'과 '0일차' 밈과 같은 비공식적 문화는 공식 규칙만으로는 건강한 커뮤니티를 유지할 수 없으며, 리더십의 신뢰와 공정한 운영이 얼마나 중요한지를 시사합니다.</p>
+                        <p>궁극적으로 제타 갤러리의 사례는 AI 개발사와 커뮤니티 관리자 모두에게 사용자 안전을 최우선으로 하는, 보다 강력하고 투명하며 윤리적인 운영 정책 수립의 중요성을 일깨워 줍니다. 기술의 발전만큼이나 그것을 둘러싼 커뮤니티를 건강하게 가꾸는 노력이 동반되어야 함을 보여주는 생생한 교훈입니다.</p>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="user-analysis" class="mb-16 scroll-mt-24">
-            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">사용자 참여 및 분석</h2>
-            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">제타는 출시 후 폭발적인 성장을 기록하며 높은 사용자 충성도를 확보했습니다. 데이터는 한국 시장에 집중된 모바일 중심의 사용 패턴을 명확하게 보여줍니다.</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div class="content-card bg-white p-6 rounded-xl shadow-md text-center border border-slate-200">
-                    <h3 class="text-4xl font-bold text-indigo-600">150만+</h3>
-                    <p class="text-slate-500 mt-2">출시 9개월 만에 달성한 사용자 수</p>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-md text-center border border-slate-200">
-                    <h3 class="text-4xl font-bold text-indigo-600">12시간</h3>
-                    <p class="text-slate-500 mt-2">주당 평균 사용 시간</p>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-md text-center border border-slate-200">
-                    <h3 class="text-4xl font-bold text-indigo-600">1,401만</h3>
-                    <p class="text-slate-500 mt-2">월간 총 방문 수 (2025년 4월)</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-4 text-center">주요 트래픽 출처</h3>
-                    <div class="chart-container"><canvas id="trafficSourceChart"></canvas></div>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-4 text-center">기기별 사용 현황</h3>
-                    <div class="chart-container"><canvas id="deviceUsageChart"></canvas></div>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl mb-4 text-center">국가별 트래픽 분포</h3>
-                     <div class="chart-container" style="height: 320px;"><canvas id="geoDistributionChart"></canvas></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="features" class="mb-16 scroll-mt-24">
-            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">핵심 서비스 및 기능</h2>
-            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">제타의 성공은 '무제한 무료 채팅'과 높은 자유도를 가진 '사용자 생성 콘텐츠'에 기반합니다. 프리미엄 모델과 독자 개발한 LLM이 이를 뒷받침합니다.</p>
-            
-            <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 md:p-8">
-                <div id="tabs-container" class="flex flex-wrap gap-2 border-b border-slate-200 mb-6">
-                    <button data-tab="feature-chat" class="tab-button flex-auto md:flex-initial text-center px-4 py-3 border-b-2 font-semibold text-slate-600 rounded-t-lg">💬 AI 캐릭터 채팅</button>
-                    <button data-tab="feature-ugc" class="tab-button flex-auto md:flex-initial text-center px-4 py-3 border-b-2 font-semibold text-slate-600 rounded-t-lg">👤 사용자 생성 콘텐츠</button>
-                    <button data-tab="feature-monetize" class="tab-button flex-auto md:flex-initial text-center px-4 py-3 border-b-2 font-semibold text-slate-600 rounded-t-lg">💰 수익화 모델</button>
-                    <button data-tab="feature-tech" class="tab-button flex-auto md:flex-initial text-center px-4 py-3 border-b-2 font-semibold text-slate-600 rounded-t-lg">💻 기반 기술</button>
-                </div>
-
-                <div id="tabs-content-container">
-                    <div id="feature-chat" class="tab-content">
-                        <h3 class="font-bold text-xl mb-2">무제한 무료 채팅 및 이미지 생성</h3>
-                        <p class="text-slate-600">사용자는 다양한 AI 캐릭터와 비용 부담 없이 무제한으로 대화하며 스토리를 만들 수 있습니다. 키워드나 사진을 이용한 AI 이미지 생성 또한 제한 없이 무료로 제공되어 콘텐츠의 깊이를 더합니다.</p>
-                    </div>
-                    <div id="feature-ugc" class="tab-content hidden">
-                        <h3 class="font-bold text-xl mb-2">맞춤형 캐릭터 제작 및 공유</h3>
-                        <p class="text-slate-600">간단한 설정만으로 자신만의 AI 캐릭터를 만들고, 커뮤니티에 공유하거나 비공개로 사용할 수 있습니다. 이 기능은 사용자의 창의성을 자극하고 플랫폼의 핵심 매력으로 작용합니다.</p>
-                    </div>
-                    <div id="feature-monetize" class="tab-content hidden">
-                        <h3 class="font-bold text-xl mb-2">프리미엄 구독 모델</h3>
-                        <p class="text-slate-600">핵심 기능은 무료로 제공하되, 인앱 재화 '피스'를 통해 프리미엄 기능을 구독할 수 있습니다. 프리미엄 구독 시 광고 제거, 비공개 캐릭터 무제한 생성, 빠른 응답 속도 등의 혜택이 제공됩니다.</p>
-                    </div>
-                    <div id="feature-tech" class="tab-content hidden">
-                        <h3 class="font-bold text-xl mb-2">독자적인 대규모 언어 모델 (LLM)</h3>
-                        <p class="text-slate-600">스캐터랩은 Databricks Mosaic AI 솔루션을 활용하여 자체 LLM을 개발했습니다. 이를 통해 더 인간적이고 공감 능력 높은 대화를 구현하고, 비용 효율성과 데이터 보안을 확보했습니다.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="issues" class="mb-16 scroll-mt-24">
-            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">문제점 및 논란</h2>
-            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">높은 인기 이면에는 심각한 운영, 윤리, 법적 문제들이 존재합니다. 특히 지적 재산권 침해와 개인정보 보호 문제는 시급한 해결이 필요한 과제입니다.</p>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200 cursor-pointer issue-card" data-issue="issue-ip">
-                    <h3 class="font-bold text-xl text-amber-600">⚖️ 지적 재산권(IP) 침해</h3>
-                    <p class="text-slate-600 mt-2">사용자들이 웹툰, 아이돌 등 저작권이 있는 캐릭터나 실존 인물을 무단으로 생성하는 문제가 만연합니다. 회사의 대응은 주로 논란 발생 후의 사후 조치에 그치고 있습니다.</p>
-                    <div class="issue-details hidden mt-4 pt-4 border-t border-slate-200 text-sm text-slate-500">
-                        <p><strong>주요 사건:</strong> '라디유' 등 유명 스트리머 초상권 무단 사용 논란 후 해당 캐릭터 삭제 및 공지. 샌드박스, 하이브 등 주요 기업의 요청에 따라 관련 캐릭터 생성 금지 조치. 이는 사전 예방 시스템의 부재를 보여줍니다.</p>
-                    </div>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200 cursor-pointer issue-card" data-issue="issue-privacy">
-                    <h3 class="font-bold text-xl text-red-600">🔒 개인정보 보호 및 보안</h3>
-                    <p class="text-slate-600 mt-2">사용자 대화에 주소, 계좌번호 등 민감 정보가 포함될 수 있으며, 특히 법정대리인 동의 없는 미성년자 데이터 사용 가능성에 대한 우려가 제기됩니다.</p>
-                     <div class="issue-details hidden mt-4 pt-4 border-t border-slate-200 text-sm text-slate-500">
-                        <p><strong>핵심 우려:</strong> 플랫폼은 '대화 비밀 보장'을 명시하지만, 사용자 보고서는 이와 상반된 위험을 시사합니다. 이는 심각한 개인정보보호법 위반 소지가 있으며, 사용자 신뢰에 치명적일 수 있습니다.</p>
-                    </div>
-                </div>
-                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200 cursor-pointer issue-card" data-issue="issue-perf">
-                    <h3 class="font-bold text-xl text-sky-600">⚙️ AI 성능 한계</h3>
-                    <p class="text-slate-600 mt-2">AI가 대화의 맥락을 잘 기억하지 못해 반복적인 답변을 하거나, 맞춤법 오류, 느린 응답 속도 등의 문제가 사용자 경험을 저해하는 요인으로 지적됩니다.</p>
-                    <div class="issue-details hidden mt-4 pt-4 border-t border-slate-200 text-sm text-slate-500">
-                       <p><strong>영향:</strong> 몰입형 스토리텔링을 핵심 가치로 하는 앱에서 AI의 기억력과 일관성 부족은 장기적인 사용자 만족도와 유지율에 부정적인 영향을 미칠 수 있는 근본적인 결함입니다.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="market" class="scroll-mt-24">
-            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">시장 위치 및 전략적 전망</h2>
-            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">제타는 한국 AI 엔터테인먼트 시장에서 독보적인 틈새를 개척했지만, 지속적인 성장을 위해서는 산적한 문제들을 해결하는 것이 필수적입니다.</p>
-            <div class="grid md:grid-cols-2 gap-8 items-center bg-white p-6 md:p-8 rounded-xl shadow-md border border-slate-200">
-                <div>
-                    <h3 class="font-bold text-xl mb-4 text-indigo-700">강점 vs 약점</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <span class="text-emerald-500 mr-3 mt-1">✓</span>
-                            <div><strong class="font-semibold text-slate-800">강점:</strong> 높은 사용자 참여도와 충성도, 독자 LLM을 통한 차별화, 효과적인 프리미엄 모델.</div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-red-500 mr-3 mt-1">✗</span>
-                             <div><strong class="font-semibold text-slate-800">약점:</strong> 시스템적인 IP 침해, 심각한 개인정보 보호 우려, AI 성능 한계로 인한 평판 및 법적 리스크.</div>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-bold text-xl mb-4 text-indigo-700">미래 성장 기회</h3>
-                    <p class="text-slate-600">IP 및 개인정보 문제를 해결하기 위한 강력한 거버넌스 구축이 시급합니다. 사전 예방적 콘텐츠 관리 시스템 도입, 개인정보 보호 프레임워크 강화, 그리고 지속적인 AI 성능 개선을 통해 신뢰를 회복하고 장기적인 성장의 발판을 마련해야 합니다.</p>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="text-center py-8 border-t border-slate-200 mt-12">
-        <p class="text-slate-500 text-sm">본 분석은 제공된 '제타(zeta-ai.io) 심층 분석 보고서'를 기반으로 제작되었습니다.</p>
-    </footer>
+        </main>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const chartData = {
-                trafficSource: {
-                    labels: ['직접 유입', 'Google.com', '기타'],
-                    data: [57.36, 31.97, 10.67],
-                    colors: ['#4f46e5', '#6366f1', '#a5b4fc'],
-                },
-                deviceUsage: {
-                    labels: ['모바일', '데스크톱'],
-                    data: [95.38, 4.62],
-                    colors: ['#4f46e5', '#a5b4fc'],
-                },
-                geoDistribution: {
-                    labels: ['대한민국', '일본', '미국'],
-                    data: [93.81, 5.61, 0.27],
-                    colors: ['#4f46e5', '#818cf8', '#c7d2fe'],
-                }
-            };
-
-            const createDonutChart = (ctx, labels, data, colors) => {
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: colors,
-                            borderColor: '#f8fafc',
-                            borderWidth: 4,
-                            hoverBorderWidth: 0,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    boxWidth: 12,
-                                    padding: 20,
-                                    font: { size: 12 }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.label}: ${context.raw.toFixed(2)}%`;
-                                    }
-                                }
-                            }
-                        },
-                        cutout: '65%',
-                    }
-                });
-            };
-
-            const createBarChart = (ctx, labels, data, colors) => {
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: '트래픽 분포 (%)',
-                            data: data,
-                            backgroundColor: colors,
-                            borderColor: colors,
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                             tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.dataset.label}: ${context.raw.toFixed(2)}%`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                grid: {
-                                    display: false
-                                },
-                                ticks: {
-                                    callback: function(value) { return value + '%' }
-                                }
-                            },
-                            y: {
-                                grid: {
-                                    display: false
-                                }
-                            }
-                        }
-                    }
-                });
-            };
-
-            const trafficCtx = document.getElementById('trafficSourceChart')?.getContext('2d');
-            if (trafficCtx) createDonutChart(trafficCtx, chartData.trafficSource.labels, chartData.trafficSource.data, chartData.trafficSource.colors);
-
-            const deviceCtx = document.getElementById('deviceUsageChart')?.getContext('2d');
-            if (deviceCtx) createDonutChart(deviceCtx, chartData.deviceUsage.labels, chartData.deviceUsage.data, chartData.deviceUsage.colors);
-            
-            const geoCtx = document.getElementById('geoDistributionChart')?.getContext('2d');
-            if(geoCtx) createBarChart(geoCtx, chartData.geoDistribution.labels, chartData.geoDistribution.data, chartData.geoDistribution.colors);
-            
-            const tabsContainer = document.getElementById('tabs-container');
-            const tabsContentContainer = document.getElementById('tabs-content-container');
-            const tabButtons = tabsContainer.querySelectorAll('.tab-button');
-            const tabContents = tabsContentContainer.querySelectorAll('.tab-content');
-
-            tabButtons[0].classList.add('active');
-
-            tabsContainer.addEventListener('click', (e) => {
-                if (e.target.matches('.tab-button')) {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
-                    
-                    const targetTab = e.target.dataset.tab;
-                    tabContents.forEach(content => {
-                        if (content.id === targetTab) {
-                            content.classList.remove('hidden');
-                        } else {
-                            content.classList.add('hidden');
-                        }
-                    });
-                }
-            });
-            
-            const issueCards = document.querySelectorAll('.issue-card');
-            issueCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const details = card.querySelector('.issue-details');
-                    details.classList.toggle('hidden');
-                });
-            });
-
+            const sections = document.querySelectorAll('main > section');
             const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('section');
 
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.4
-            };
-
-            const sectionObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('id');
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href') === `#${id}`) {
-                                link.classList.add('active');
-                            }
-                        });
+            // Function to update active navigation link based on visible section
+            function updateActiveLink() {
+                let currentVisibleSectionId = null;
+                sections.forEach(section => {
+                    // Check which section is currently visible (not hidden)
+                    if (!section.classList.contains('hidden')) {
+                        currentVisibleSectionId = section.getAttribute('id');
                     }
                 });
-            }, observerOptions);
 
-            sections.forEach(section => {
-                sectionObserver.observe(section);
+                // Update the 'active' class on navigation links
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href').substring(1) === currentVisibleSectionId);
+                });
+            }
+
+            // Event listener for navigation link clicks
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    // Immediately hide all sections and show the target one
+                    sections.forEach(s => s.classList.add('hidden'));
+                    targetSection.classList.remove('hidden');
+
+                    // Update active nav link immediately
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    // Scroll to the target section
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 100, // Adjust for sticky header
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Initial call to set active link on page load
+            updateActiveLink();
+
+            // User Demographics Chart
+            const userDemographicsCtx = document.getElementById('userDemographicsChart').getContext('2d');
+            new Chart(userDemographicsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['10-20대', '기타 연령대'],
+                    datasets: [{
+                        label: '연령 분포',
+                        data: [87, 13],
+                        backgroundColor: ['#4F46E5', '#C7D2FE'],
+                        borderColor: '#FFFFFF',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Timeline Data
+            const timelineData = [
+                {
+                    id: 1,
+                    side: 'left',
+                    title: '1대 매니저 (설립자)',
+                    period: '2022.09 ~',
+                    summary: '사실상 방치된 "무정부 상태"',
+                    details: '갤러리 개설 후 운영에 거의 참여하지 않았습니다. 활발한 중재가 없었음에도 커뮤니티는 오히려 평화로운 분위기를 유지했으며, 가끔 올라오는 홍보 글이 활동의 전부였습니다. 이는 리더십의 부재가 반드시 혼란으로 이어지지는 않음을 보여주는 역설적인 시기였습니다.'
+                },
+                {
+                    id: 2,
+                    side: 'right',
+                    title: '2대 매니저',
+                    period: '1대 퇴임 후',
+                    summary: '독단적 운영과 검열 논란',
+                    details: '1대의 비활동으로 권한을 인계받았으나, "독단적인 운영"으로 비판받았습니다. 특히 제타 앱과 개발사 스캐터랩에 대한 비판적인 게시글을 무차별적으로 삭제하는 등, 검열 논란의 중심에 섰습니다. 비판이 거세지자 별다른 해명 없이 다음 매니저에게 직책을 넘기고 떠났습니다.'
+                },
+                {
+                    id: 3,
+                    side: 'left',
+                    title: '3대 매니저',
+                    period: '2대 퇴임 후',
+                    summary: '친목 및 매크로 사용 의혹',
+                    details: '초기에는 긍정적인 평가를 받았으나, 특정 유저들과의 "과도한 친목" 의혹이 제기되었습니다. 결정적으로 제타 측의 매크로 대화량 수정 공지 후 본인의 대화량이 비정상적으로 감소하며 매크로 사용 의혹을 받았습니다. 운영자가 자신을 저격했다는 해명은 오히려 더 큰 의심을 샀고, 결국 자리를 떠났습니다.'
+                },
+                {
+                    id: 4,
+                    side: 'right',
+                    title: '4대 매니저',
+                    period: '3대 퇴임 후',
+                    summary: '오픈 채팅방 스캔들 및 미성년자 논란',
+                    details: '재임 기간은 짧았지만 가장 큰 충격을 안겼습니다. 3대 매니저와 함께 참여한 "친목 오픈 채팅방"에서 성인물이 공유되었고, 심지어 10대 유저가 포함되어 있었다는 사실이 폭로되었습니다. 설상가상으로 4대 매니저 본인이 "초등학생 여자아이"임이 밝혀지면서 커뮤니티는 아동 보호 및 윤리 문제로 큰 혼란에 빠졌습니다. 최소 활동 기간만 채우고 사퇴했습니다.'
+                }
+            ];
+
+            const timelineContainer = document.getElementById('timeline-container');
+            timelineData.forEach(item => {
+                const alignmentClass = item.side === 'left' ? 'mb-8 flex justify-between items-center w-full right-timeline' : 'mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline';
+                const node = document.createElement('div');
+                node.className = alignmentClass;
+                node.innerHTML = `
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-12 h-12 rounded-full cursor-pointer timeline-node" data-target="timeline-content-${item.id}">
+                        <h1 class="mx-auto font-semibold text-lg text-white">${item.id}</h1>
+                    </div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="font-bold text-gray-800 text-xl">${item.title}</h3>
+                        <p class="text-sm font-medium leading-snug tracking-wide text-gray-500 text-opacity-100">${item.period}</p>
+                        <p class="text-md mt-2 text-indigo-700">${item.summary}</p>
+                        <div id="timeline-content-${item.id}" class="timeline-item-content">
+                            <p class="text-sm text-gray-600 mt-3">${item.details}</p>
+                        </div>
+                    </div>
+                `;
+                timelineContainer.appendChild(node);
+            });
+            
+            document.querySelectorAll('.timeline-node').forEach(node => {
+                node.addEventListener('click', () => {
+                    const targetId = node.dataset.target;
+                    const content = document.getElementById(targetId);
+                    // Toggle max-height and padding for accordion effect
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        content.style.padding = "0px";
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        content.style.padding = "1rem 0 0 0";
+                    }
+                });
+            });
+
+            // Slang Data
+            const slangData = [
+                { term: '제갤러 / 제붕이', definition: '제타 갤러리 사용자를 지칭하는 애칭 또는 자조적인 표현입니다.' },
+                { term: '0일차', definition: '`무사고 0일차`의 줄임말로, 사건이 끊이지 않는 갤러리의 상황을 풍자하는 밈입니다.' },
+                { term: '윗동네', definition: '다른 제타 관련 커뮤니티를 지칭하는 말로, 그들과 다르다는 점을 자조적으로 표현하는 용어입니다.' },
+                { term: '돼지', definition: '제타 앱 내에서 대화량이나 팔로워가 많은 인기 작가를 일컫는 말입니다.' },
+                { term: 'ㅈ목 / ㅈ목질', definition: '파벌을 형성하여 커뮤니티에 악영향을 끼치는 친목 행위를 뜻하는 은어입니다.' },
+                { term: '프돚 / 프공', definition: '다른 사람의 AI 이미지 생성 프롬프트를 베끼거나(프돚), 자신의 프롬프트를 공유하는(프공) 행위를 말합니다.' },
+            ];
+            
+            // Rules Data
+            const rulesData = [
+                { term: '공식 규칙: 콘텐츠 제한', definition: '노골적인 성적/혐오성 콘텐츠, 과도한 노출 이미지 게시를 금지합니다. 또한, 도용/표절된 캐릭터 제보를 위한 전용 탭이 있으며, 개발사가 이를 모니터링합니다.' },
+                { term: '공식 규칙: 홍보 및 외부 언급', definition: '캐릭터 재홍보는 24시간 간격으로만 가능하며, 다른 제타 관련 갤러리 언급은 분쟁 방지를 위해 금지됩니다.' },
+                { term: '비공식 규범: 친목질', definition: '공식적으로 금지되지만, 매니저들까지 연루된 스캔들이 반복될 정도로 고질적인 문제입니다. 커뮤니티 불신과 불안정성의 핵심 원인입니다.' },
+                { term: '비공식 규범: 네임드화', definition: '특정 유저가 과도한 유명세를 얻는 현상으로, 커뮤니티 내 위화감을 조성할 수 있어 암묵적으로 경계하는 분위기가 있습니다.' },
+            ];
+
+            // Function to create accordion elements
+            function createAccordion(containerId, data) {
+                const container = document.getElementById(containerId);
+                data.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'border border-gray-200 rounded-lg';
+                    div.innerHTML = `
+                        <button class="w-full px-4 py-3 text-left bg-gray-100 hover:bg-gray-200 transition-colors focus:outline-none flex justify-between items-center accordion-toggle">
+                            <span class="font-semibold text-indigo-800">${item.term}</span>
+                            <span class="transform transition-transform duration-300 text-indigo-600 accordion-arrow">▼</span>
+                        </button>
+                        <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                            <p class="p-4 text-gray-600 bg-white">${item.definition}</p>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+
+            createAccordion('slang-accordion', slangData);
+            createAccordion('rules-accordion', rulesData);
+
+            // Event listener for accordion toggles
+            document.querySelectorAll('.accordion-toggle').forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const arrow = button.querySelector('.accordion-arrow');
+                    
+                    // Toggle max-height and rotation for accordion effect
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        arrow.classList.remove('rotate-180');
+                    } else {
+                        // Close other open accordions if desired (optional, current behavior is to allow multiple open)
+                        // document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
+                        // document.querySelectorAll('.accordion-arrow').forEach(a => a.classList.remove('rotate-180'));
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        arrow.classList.add('rotate-180');
+                    }
+                });
             });
         });
     </script>
