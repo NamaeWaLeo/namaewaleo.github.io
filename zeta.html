@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제타(zeta-ai.io) 대화형 분석 보고서</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Visualization & Content Choices: 
+        - Report Info: User Demographics & Traffic. Goal: Inform & Compare. Viz: Donut/Bar charts (Chart.js/Canvas). Interaction: Tooltips on hover. Justification: Charts offer a quick, digestible view of distributions and comparisons, superior to text or tables.
+        - Report Info: Core Features. Goal: Organize & Inform. Viz: Tabbed interface (HTML/CSS/JS). Interaction: Click to switch content. Justification: Tabs group related information cleanly, allowing users to focus on one feature at a time without clutter.
+        - Report Info: Issues & Controversies. Goal: Highlight & Inform. Viz: Grid of interactive "alert" cards with icons (HTML/CSS/JS). Interaction: Click to expand details. Justification: Visually separates critical issues and allows for progressive disclosure of details, making sensitive information manageable and less overwhelming.
+        - Report Info: Company Differentiation. Goal: Clarify Identity. Viz: Card layout (HTML/CSS). Justification: Clearly segregates 'zeta-ai.io' from similarly named entities, addressing a key point of confusion early on.
+    -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 640px) {
+            .chart-container {
+                height: 320px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #4f46e5; /* indigo-600 */
+            border-bottom-color: #4f46e5;
+        }
+        .content-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .tab-button.active {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+            color: #4338ca;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900">제타(zeta-ai.io) 심층 분석</h1>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#overview" class="nav-link text-slate-600 font-medium pb-1 border-b-2 border-transparent">개요</a>
+                    <a href="#user-analysis" class="nav-link text-slate-600 font-medium pb-1 border-b-2 border-transparent">사용자 분석</a>
+                    <a href="#features" class="nav-link text-slate-600 font-medium pb-1 border-b-2 border-transparent">핵심 기능</a>
+                    <a href="#issues" class="nav-link text-slate-600 font-medium pb-1 border-b-2 border-transparent">문제점 및 논란</a>
+                    <a href="#market" class="nav-link text-slate-600 font-medium pb-1 border-b-2 border-transparent">시장 위치</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <section id="overview" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">서비스 개요</h2>
+            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">스캐터랩이 개발한 '제타'는 AI 캐릭터 채팅을 중심으로 한 엔터테인먼트 플랫폼입니다. 독자적인 언어 모델을 기반으로 한국의 모바일 사용자에게 높은 몰입감과 참여도를 이끌어냈습니다. 본 분석은 제타의 서비스, 사용자 동향, 그리고 운영상의 주요 쟁점들을 다룹니다.</p>
+            
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <h3 class="font-bold text-xl mb-4 text-indigo-700">⚠️ 중요: '제타'의 명확한 구분</h3>
+                <p class="text-slate-600 mb-6">`zeta-ai.io`는 스캐터랩의 AI 채팅 앱을 지칭합니다. 아래는 이름이 유사하지만 전혀 다른 서비스들입니다.</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-slate-800">제타 글로벌 (Zeta Global)</h4>
+                        <p class="text-sm text-slate-500 mt-1">상장된 마케팅 기술 기업. 현재 증권 사기 소송에 직면.</p>
+                    </div>
+                    <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-slate-800">제다아이오 (Zeda.io)</h4>
+                        <p class="text-sm text-slate-500 mt-1">제품 발굴 플랫폼. 2025년 2월 서비스 종료 발표.</p>
+                    </div>
+                    <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-slate-800">제타닷테크 (Zeta.tech)</h4>
+                        <p class="text-sm text-slate-500 mt-1">금융 기관을 위한 뱅킹 기술 기업.</p>
+                    </div>
+                     <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-slate-800">제드닷데브 (Zed.dev)</h4>
+                        <p class="text-sm text-slate-500 mt-1">'Zeta' 언어 모델을 사용하는 코드 편집기.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="user-analysis" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">사용자 참여 및 분석</h2>
+            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">제타는 출시 후 폭발적인 성장을 기록하며 높은 사용자 충성도를 확보했습니다. 데이터는 한국 시장에 집중된 모바일 중심의 사용 패턴을 명확하게 보여줍니다.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="content-card bg-white p-6 rounded-xl shadow-md text-center border border-slate-200">
+                    <h3 class="text-4xl font-bold text-indigo-600">150만+</h3>
+                    <p class="text-slate-500 mt-2">출시 9개월 만에 달성한 사용자 수</p>
+                </div>
+                <div class="content-card bg-white p-6 rounded-xl shadow-md text-center border border-slate-200">
+                    <h3 class="text-4xl font-bold text-indigo-600">12시간</h3>
+                    <p class="text-slate-500 mt-2">주당 평균 사용 시간</p>
+                </div>
+                <div class="content-card bg-white p-6 rounded-xl shadow-md text-center border border-slate-200">
+                    <h3 class="text-4xl font-bold text-indigo-600">1,401만</h3>
+                    <p class="text-slate-500 mt-2">월간 총 방문 수 (2025년 4월)</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl mb-4 text-center">주요 트래픽 출처</h3>
+                    <div class="chart-container"><canvas id="trafficSourceChart"></canvas></div>
+                </div>
+                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl mb-4 text-center">기기별 사용 현황</h3>
+                    <div class="chart-container"><canvas id="deviceUsageChart"></canvas></div>
+                </div>
+                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl mb-4 text-center">국가별 트래픽 분포</h3>
+                     <div class="chart-container" style="height: 320px;"><canvas id="geoDistributionChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">핵심 서비스 및 기능</h2>
+            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">제타의 성공은 '무제한 무료 채팅'과 높은 자유도를 가진 '사용자 생성 콘텐츠'에 기반합니다. 프리미엄 모델과 독자 개발한 LLM이 이를 뒷받침합니다.</p>
+            
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 md:p-8">
+                <div id="tabs-container" class="flex flex-wrap gap-2 border-b border-slate-200 mb-6">
+                    <button data-tab="feature-chat" class="tab-button flex-auto md:flex-initial text-center px-4 py-3 border-b-2 font-semibold text-slate-600 rounded-t-lg">💬 AI 캐릭터 채팅</button>
+                    <button data-tab="feature-ugc" class="tab-button flex-auto md:flex-initial text-center px-4 py-3 border-b-2 font-semibold text-slate-600 rounded-t-lg">👤 사용자 생성 콘텐츠</button>
+                    <button data-tab="feature-monetize" class="tab-button flex-auto md:flex-initial text-center px-4 py-3 border-b-2 font-semibold text-slate-600 rounded-t-lg">💰 수익화 모델</button>
+                    <button data-tab="feature-tech" class="tab-button flex-auto md:flex-initial text-center px-4 py-3 border-b-2 font-semibold text-slate-600 rounded-t-lg">💻 기반 기술</button>
+                </div>
+
+                <div id="tabs-content-container">
+                    <div id="feature-chat" class="tab-content">
+                        <h3 class="font-bold text-xl mb-2">무제한 무료 채팅 및 이미지 생성</h3>
+                        <p class="text-slate-600">사용자는 다양한 AI 캐릭터와 비용 부담 없이 무제한으로 대화하며 스토리를 만들 수 있습니다. 키워드나 사진을 이용한 AI 이미지 생성 또한 제한 없이 무료로 제공되어 콘텐츠의 깊이를 더합니다.</p>
+                    </div>
+                    <div id="feature-ugc" class="tab-content hidden">
+                        <h3 class="font-bold text-xl mb-2">맞춤형 캐릭터 제작 및 공유</h3>
+                        <p class="text-slate-600">간단한 설정만으로 자신만의 AI 캐릭터를 만들고, 커뮤니티에 공유하거나 비공개로 사용할 수 있습니다. 이 기능은 사용자의 창의성을 자극하고 플랫폼의 핵심 매력으로 작용합니다.</p>
+                    </div>
+                    <div id="feature-monetize" class="tab-content hidden">
+                        <h3 class="font-bold text-xl mb-2">프리미엄 구독 모델</h3>
+                        <p class="text-slate-600">핵심 기능은 무료로 제공하되, 인앱 재화 '피스'를 통해 프리미엄 기능을 구독할 수 있습니다. 프리미엄 구독 시 광고 제거, 비공개 캐릭터 무제한 생성, 빠른 응답 속도 등의 혜택이 제공됩니다.</p>
+                    </div>
+                    <div id="feature-tech" class="tab-content hidden">
+                        <h3 class="font-bold text-xl mb-2">독자적인 대규모 언어 모델 (LLM)</h3>
+                        <p class="text-slate-600">스캐터랩은 Databricks Mosaic AI 솔루션을 활용하여 자체 LLM을 개발했습니다. 이를 통해 더 인간적이고 공감 능력 높은 대화를 구현하고, 비용 효율성과 데이터 보안을 확보했습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="issues" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">문제점 및 논란</h2>
+            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">높은 인기 이면에는 심각한 운영, 윤리, 법적 문제들이 존재합니다. 특히 지적 재산권 침해와 개인정보 보호 문제는 시급한 해결이 필요한 과제입니다.</p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200 cursor-pointer issue-card" data-issue="issue-ip">
+                    <h3 class="font-bold text-xl text-amber-600">⚖️ 지적 재산권(IP) 침해</h3>
+                    <p class="text-slate-600 mt-2">사용자들이 웹툰, 아이돌 등 저작권이 있는 캐릭터나 실존 인물을 무단으로 생성하는 문제가 만연합니다. 회사의 대응은 주로 논란 발생 후의 사후 조치에 그치고 있습니다.</p>
+                    <div class="issue-details hidden mt-4 pt-4 border-t border-slate-200 text-sm text-slate-500">
+                        <p><strong>주요 사건:</strong> '라디유' 등 유명 스트리머 초상권 무단 사용 논란 후 해당 캐릭터 삭제 및 공지. 샌드박스, 하이브 등 주요 기업의 요청에 따라 관련 캐릭터 생성 금지 조치. 이는 사전 예방 시스템의 부재를 보여줍니다.</p>
+                    </div>
+                </div>
+                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200 cursor-pointer issue-card" data-issue="issue-privacy">
+                    <h3 class="font-bold text-xl text-red-600">🔒 개인정보 보호 및 보안</h3>
+                    <p class="text-slate-600 mt-2">사용자 대화에 주소, 계좌번호 등 민감 정보가 포함될 수 있으며, 특히 법정대리인 동의 없는 미성년자 데이터 사용 가능성에 대한 우려가 제기됩니다.</p>
+                     <div class="issue-details hidden mt-4 pt-4 border-t border-slate-200 text-sm text-slate-500">
+                        <p><strong>핵심 우려:</strong> 플랫폼은 '대화 비밀 보장'을 명시하지만, 사용자 보고서는 이와 상반된 위험을 시사합니다. 이는 심각한 개인정보보호법 위반 소지가 있으며, 사용자 신뢰에 치명적일 수 있습니다.</p>
+                    </div>
+                </div>
+                <div class="content-card bg-white p-6 rounded-xl shadow-md border border-slate-200 cursor-pointer issue-card" data-issue="issue-perf">
+                    <h3 class="font-bold text-xl text-sky-600">⚙️ AI 성능 한계</h3>
+                    <p class="text-slate-600 mt-2">AI가 대화의 맥락을 잘 기억하지 못해 반복적인 답변을 하거나, 맞춤법 오류, 느린 응답 속도 등의 문제가 사용자 경험을 저해하는 요인으로 지적됩니다.</p>
+                    <div class="issue-details hidden mt-4 pt-4 border-t border-slate-200 text-sm text-slate-500">
+                       <p><strong>영향:</strong> 몰입형 스토리텔링을 핵심 가치로 하는 앱에서 AI의 기억력과 일관성 부족은 장기적인 사용자 만족도와 유지율에 부정적인 영향을 미칠 수 있는 근본적인 결함입니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="market" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4 text-center">시장 위치 및 전략적 전망</h2>
+            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">제타는 한국 AI 엔터테인먼트 시장에서 독보적인 틈새를 개척했지만, 지속적인 성장을 위해서는 산적한 문제들을 해결하는 것이 필수적입니다.</p>
+            <div class="grid md:grid-cols-2 gap-8 items-center bg-white p-6 md:p-8 rounded-xl shadow-md border border-slate-200">
+                <div>
+                    <h3 class="font-bold text-xl mb-4 text-indigo-700">강점 vs 약점</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="text-emerald-500 mr-3 mt-1">✓</span>
+                            <div><strong class="font-semibold text-slate-800">강점:</strong> 높은 사용자 참여도와 충성도, 독자 LLM을 통한 차별화, 효과적인 프리미엄 모델.</div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-3 mt-1">✗</span>
+                             <div><strong class="font-semibold text-slate-800">약점:</strong> 시스템적인 IP 침해, 심각한 개인정보 보호 우려, AI 성능 한계로 인한 평판 및 법적 리스크.</div>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xl mb-4 text-indigo-700">미래 성장 기회</h3>
+                    <p class="text-slate-600">IP 및 개인정보 문제를 해결하기 위한 강력한 거버넌스 구축이 시급합니다. 사전 예방적 콘텐츠 관리 시스템 도입, 개인정보 보호 프레임워크 강화, 그리고 지속적인 AI 성능 개선을 통해 신뢰를 회복하고 장기적인 성장의 발판을 마련해야 합니다.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 border-t border-slate-200 mt-12">
+        <p class="text-slate-500 text-sm">본 분석은 제공된 '제타(zeta-ai.io) 심층 분석 보고서'를 기반으로 제작되었습니다.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chartData = {
+                trafficSource: {
+                    labels: ['직접 유입', 'Google.com', '기타'],
+                    data: [57.36, 31.97, 10.67],
+                    colors: ['#4f46e5', '#6366f1', '#a5b4fc'],
+                },
+                deviceUsage: {
+                    labels: ['모바일', '데스크톱'],
+                    data: [95.38, 4.62],
+                    colors: ['#4f46e5', '#a5b4fc'],
+                },
+                geoDistribution: {
+                    labels: ['대한민국', '일본', '미국'],
+                    data: [93.81, 5.61, 0.27],
+                    colors: ['#4f46e5', '#818cf8', '#c7d2fe'],
+                }
+            };
+
+            const createDonutChart = (ctx, labels, data, colors) => {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors,
+                            borderColor: '#f8fafc',
+                            borderWidth: 4,
+                            hoverBorderWidth: 0,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 20,
+                                    font: { size: 12 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.raw.toFixed(2)}%`;
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '65%',
+                    }
+                });
+            };
+
+            const createBarChart = (ctx, labels, data, colors) => {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '트래픽 분포 (%)',
+                            data: data,
+                            backgroundColor: colors,
+                            borderColor: colors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                             tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw.toFixed(2)}%`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    callback: function(value) { return value + '%' }
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            const trafficCtx = document.getElementById('trafficSourceChart')?.getContext('2d');
+            if (trafficCtx) createDonutChart(trafficCtx, chartData.trafficSource.labels, chartData.trafficSource.data, chartData.trafficSource.colors);
+
+            const deviceCtx = document.getElementById('deviceUsageChart')?.getContext('2d');
+            if (deviceCtx) createDonutChart(deviceCtx, chartData.deviceUsage.labels, chartData.deviceUsage.data, chartData.deviceUsage.colors);
+            
+            const geoCtx = document.getElementById('geoDistributionChart')?.getContext('2d');
+            if(geoCtx) createBarChart(geoCtx, chartData.geoDistribution.labels, chartData.geoDistribution.data, chartData.geoDistribution.colors);
+            
+            const tabsContainer = document.getElementById('tabs-container');
+            const tabsContentContainer = document.getElementById('tabs-content-container');
+            const tabButtons = tabsContainer.querySelectorAll('.tab-button');
+            const tabContents = tabsContentContainer.querySelectorAll('.tab-content');
+
+            tabButtons[0].classList.add('active');
+
+            tabsContainer.addEventListener('click', (e) => {
+                if (e.target.matches('.tab-button')) {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    const targetTab = e.target.dataset.tab;
+                    tabContents.forEach(content => {
+                        if (content.id === targetTab) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+            
+            const issueCards = document.querySelectorAll('.issue-card');
+            issueCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const details = card.querySelector('.issue-details');
+                    details.classList.toggle('hidden');
+                });
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.4
+            };
+
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
