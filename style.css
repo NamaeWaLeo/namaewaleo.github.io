@@ -1,0 +1,246 @@
+/* 기본 설정 및 폰트 */
+body {
+    font-family: 'Noto Sans KR', 'SF Pro Display', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    background-color: #e0e0e0; /* 뉴모피즘 배경 색상 */
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Apple 느낌의 부드러운 전환 효과 */
+* {
+    transition: all 0.3s ease-in-out;
+}
+
+/* 뉴모피즘 카드 스타일 */
+.neumorphic-card {
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    padding: 30px;
+    margin: 20px 0;
+    box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff; /* 깊이감 있는 그림자 */
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+}
+
+/* 내부 뉴모피즘 (경고창 등) */
+.neumorphic-card-inner {
+    background-color: #e0e0e0;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff; /* 안으로 들어가는 그림자 */
+}
+
+
+/* 그라데이션 텍스트 */
+.gradient-text {
+    background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%); /* 파랑-보라 그라데이션 */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.2em;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1); /* 텍스트 그림자 추가 */
+}
+
+/* 헤더 스타일 */
+header {
+    text-align: center;
+    padding: 40px 30px;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 2.8em;
+    color: #333; /* 뉴모피즘과 어울리도록 색상 조정 */
+    font-weight: 700;
+    letter-spacing: -0.03em; /* Apple 폰트 느낌 */
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 1.1em;
+    color: #666;
+}
+
+/* 섹션 및 규칙 항목 스타일 */
+section {
+    margin-bottom: 40px;
+}
+
+.rule-item {
+    background-color: #ececec; /* 섹션 내부 아이템 배경 색상 */
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 3px 3px 6px #d4d4d4, -3px -3px 6px #fcfcfc; /* 부드러운 뉴모피즘 */
+}
+
+.rule-item h3 {
+    font-size: 1.4em;
+    color: #444;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.rule-item ul {
+    list-style: none; /* 기본 점 제거 */
+    padding-left: 0;
+}
+
+.rule-item li {
+    margin-bottom: 10px;
+    font-size: 1.05em;
+    color: #555;
+    position: relative; /* 아이콘 위치 지정을 위함 */
+    padding-left: 25px; /* 아이콘 공간 확보 */
+}
+
+.rule-item li:before {
+    content: '•'; /* Apple 리스트 느낌의 불릿 포인트 */
+    color: #2575fc; /* 그라데이션 시작 색상 */
+    font-size: 1.2em;
+    position: absolute;
+    left: 0;
+    top: 0;
+    line-height: inherit; /* 텍스트와 불릿 정렬 */
+}
+
+.rule-item li strong {
+    color: #333; /* 강조 텍스트 색상 */
+    font-weight: 600;
+}
+
+/* 자랑 관련 안내 (⭐) 특별 스타일 */
+.star-callout {
+    background: linear-gradient(135deg, #fce075 0%, #fca11b 100%); /* 따뜻한 그라데이션 */
+    box-shadow: 8px 8px 16px rgba(252, 161, 27, 0.3), -8px -8px 16px rgba(252, 224, 117, 0.5);
+    color: #6a4400;
+}
+
+.star-callout h3 {
+    color: #6a4400;
+    font-weight: 700;
+    text-shadow: none; /* 그라데이션 텍스트 효과 제거 */
+}
+
+.star-callout li {
+    color: #6a4400;
+}
+
+.star-callout li:before {
+    color: #fca11b;
+}
+
+/* 제작자 도킹 경고 특별 스타일 */
+.creator-warning {
+    border: 1px solid #c2c2c2; /* 부드러운 경계선 */
+    padding: 25px;
+    text-align: center;
+    font-weight: 500;
+    color: #555;
+}
+
+.creator-warning h3 {
+    font-size: 1.6em;
+    color: #d9534f; /* 경고 느낌의 붉은색 */
+    margin-bottom: 15px;
+}
+
+.creator-warning ul {
+    list-style: decimal; /* 숫자 목록으로 변경 */
+    display: inline-block; /* 목록 중앙 정렬을 위함 */
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.creator-warning li {
+    padding-left: 0;
+    margin-bottom: 5px;
+}
+.creator-warning li:before {
+    content: none; /* 기본 불릿 제거 */
+}
+
+
+/* 총정리 섹션 */
+.summary-section {
+    text-align: center;
+    padding: 40px;
+    margin-top: 50px;
+}
+
+.summary-section p {
+    font-size: 1.15em;
+    color: #444;
+    margin-bottom: 15px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    .neumorphic-card {
+        padding: 20px;
+        margin: 15px 0;
+    }
+
+    header h1 {
+        font-size: 2.2em;
+    }
+
+    .gradient-text {
+        font-size: 1.8em;
+    }
+
+    .rule-item h3 {
+        font-size: 1.2em;
+    }
+
+    .rule-item li {
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .neumorphic-card {
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 15px;
+    }
+
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    header p {
+        font-size: 0.9em;
+    }
+
+    .gradient-text {
+        font-size: 1.5em;
+    }
+
+    .rule-item {
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .rule-item h3 {
+        font-size: 1.1em;
+    }
+}
